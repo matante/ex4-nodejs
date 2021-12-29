@@ -10,7 +10,7 @@ let ValidationModule = (() => {
     const onlyChars = function (kind) {
         const name = document.getElementById(`${kind}`).value.trim();
 
-        const valid = /^[a-zA-Z]+$/.test(name);
+        const valid = /^[a-zA-Z]+$/.test(name) && name !== "";
 
         if (valid) { // good name
             document.getElementById(`${kind}Invalid`).classList.add("d-none"); // remove the error
@@ -22,7 +22,6 @@ let ValidationModule = (() => {
     };
 
     const isMatching = function (pw1, pw2){
-        console.log("in matching", pw1, pw2, pw1===pw2)
         if (pw1 === pw2){
             document.getElementById("notMatchingPassword").classList.add("d-none"); // remove the error
             return true;
@@ -53,6 +52,7 @@ let ValidationModule = (() => {
         const v1 = form.checkValidity();
         const v2 = onlyChars("firstName");
         const v3 = onlyChars("lastName");
+        // NOT EMPTY
 
 
         return v1 && v2 && v3;
