@@ -33,7 +33,8 @@
                         <div class="text-center">
                             <h5>Please fill the details to log in</h5>
                         </div>
-                        <form class="needs-validation" id="loginForm" action="/" method="post">
+
+                        <form class="needs-validation" id="loginForm" action="/home" method="post">
                             <input type="hidden" name="phase" value="userLogged">
 
                             <div>
@@ -65,12 +66,16 @@
                         <h5>Please fill the details to sign up</h5>
                     </div>
 
+                        <div class="text-danger errormessage <%= details.timedOut ? "" : "d-none" %> ">
+                            You must complete registration in less than 1 minute!
+                        </div>
+
                     <form class="needs-validation" id="registrationForm" action="/" method="post">
                         <input type="hidden" name="phase" value="finishedReg1">
                         <div class="mb-3">
                             <label for="email" class="form-label">Email address</label>
                             <input type="email" class="form-control" id="email" name="email"
-                                   value="<%= details.duplicate ? details.email : "" %>"
+                                   value="<%= details.duplicate || details.timedOut ? details.email : "" %>"
                                    placeholder="name@example.com" required>
                         </div>
                         <div class="text-danger errormessage <%= details.duplicate ? "" : "d-none" %> "
@@ -86,7 +91,7 @@
                         <div class="mb-3">
                             <label for="firstName" class="form-label">First name</label>
                             <input type="text" class="form-control" id="firstName"
-                                   value="<%= details.duplicate ? details.firstName : "" %>" name="firstName"
+                                   value="<%= details.duplicate || details.timedOut ? details.firstName : "" %>" name="firstName"
                                    placeholder="Jane" required>
                         </div>
                         <div class="text-danger errormessage d-none" id="firstNameInvalid">
@@ -95,7 +100,7 @@
                         <div class="mb-3">
                             <label for="lastName" class="form-label">Last name</label>
                             <input type="text" class="form-control" id="lastName"
-                                   value="<%= details.duplicate ? details.lastName : "" %>" name="lastName"
+                                   value="<%= details.duplicate || details.timedOut ? details.lastName : "" %>" name="lastName"
                                    placeholder="Doe" required>
                         </div>
                         <div class="text-danger errormessage d-none" id="lastNameInvalid">

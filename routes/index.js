@@ -1,7 +1,11 @@
 var express = require('express');
 var router = express.Router();
+const Cookies = require('cookies')
+const keys = ['dragon leaf bike']
 
-const db = require('../models'); //contain the User model, which is accessible via db.User
+
+const db = require('../models');
+const {maxAge} = require("express-session/session/cookie"); //contain the User model, which is accessible via db.User
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -19,21 +23,25 @@ router.get('/findall', (req, res) => {
         });
 });
 
-const validateEmail = (email) => {
-    return email.match(
-        /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    );
-};
 
 router.post('/', function (req, res, next) {
     const phase = req.body.phase;
     const {email, firstName, lastName} = req.body
 
+    const cookies = new Cookies(req, res, {keys: keys})
+    const registrationCookie = cookies.get("registrationCookie", {signed: true})
+
     switch (phase) {
         case "needToRegister":
-            return res.render('index', {phase: "needToRegister", details: {duplicate: false, inFormat: true}});
+            return res.render('index', {phase: "needToRegister",
+                details: {duplicate: false, inFormat: true, timedOut : false}});
 
         case "finishedReg1":
+
+             if (!registrationCookie) {
+                cookies.set("registrationCookie", new Date().toISOString(), {signed: true, maxAge: 1000 * 15})
+                 //todo change back to 60 seconds!
+            }
 
             let duplicate = false;
             db.User.findOne({
@@ -49,7 +57,7 @@ router.post('/', function (req, res, next) {
             if (duplicate) {
                 return res.render('index', {
                     phase: "needToRegister",
-                    details: {duplicate: true, email, firstName, lastName}
+                    details: {duplicate: true, email, firstName, lastName, timedOut : false}
                 });
 
             } else {
@@ -63,6 +71,11 @@ router.post('/', function (req, res, next) {
 
 
         case "entered2Passwords":
+            if (!registrationCookie) {
+                return res.render('index', {phase: "needToRegister",
+                    details: {email, firstName, lastName, duplicate: false, inFormat: true, timedOut : true}});
+            }
+
             const LENGTH = 8;
             const {pass1, pass2} = req.body
             const matching = pass1 === pass2;
