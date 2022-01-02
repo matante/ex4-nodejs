@@ -26,15 +26,20 @@ router.get('/findall', (req, res) => {
 
 router.post('/', function (req, res, next) {
     const phase = req.body.phase;
-    const {email, firstName, lastName} = req.body
+
+    if (phase === "needToRegister"){
+        return res.render('index', {phase: "needToRegister",
+            details: {duplicate: false, inFormat: true, timedOut : false}});
+    }
 
     const cookies = new Cookies(req, res, {keys: keys})
     const registrationCookie = cookies.get("registrationCookie", {signed: true})
 
+    const {firstName, lastName} = req.body
+    const email = req.body.email.toLowerCase()
+
     switch (phase) {
         case "needToRegister":
-            return res.render('index', {phase: "needToRegister",
-                details: {duplicate: false, inFormat: true, timedOut : false}});
 
         case "finishedReg1":
 
@@ -45,7 +50,7 @@ router.post('/', function (req, res, next) {
 
             let duplicate = false;
             db.User.findOne({
-                where: {email: email},
+                where: {email: email.toLowerCase()},
             }).then(user => {
                 if (user) { // already exist
                     duplicate = true;

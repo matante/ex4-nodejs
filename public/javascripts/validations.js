@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!ValidationModule.validateRegistrationForm(registrationForm)) {// validation failed
                 event.stopPropagation();
             } else { // succeed
-                const email = document.getElementById("email").value.trim();
+                const email = document.getElementById("email").value.trim().toLowerCase();
 
                 fetch(`/api/users/${email}`)
                     .then((res) => {

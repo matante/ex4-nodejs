@@ -14,7 +14,9 @@ router.get('/users', (req, res) => {
 });
 
 router.post('/users', (req, res) => {
-    const {email, firstName, lastName, password} = req.body
+    const {firstName, lastName, password} = req.body
+    const email = req.body.email.toLowerCase()
+
     return db.User.create({email, firstName, lastName, password})
         .then((user) => res.send(user))
         .catch((err) => {
@@ -25,7 +27,7 @@ router.post('/users', (req, res) => {
 
 router.get('/users/:email', function (req, res, next) {
 
-    const email = req.params.email;
+    const email = req.params.email.toLowerCase();
 
     db.User.findOne({
         where: {email: email},
