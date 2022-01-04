@@ -9,7 +9,15 @@ const {maxAge} = require("express-session/session/cookie"); //contain the User m
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-    return res.render('index', {phase: 'login', details: {}});
+
+    if (req.session.loggedIn) {
+        return res.render('home');
+    }
+    req.session.loggedIn = false
+
+    return res.render('index', {phase: 'login', details: {value: "", loginFailed: false}});
+
+
 });
 
 router.get('/findall', (req, res) => {
@@ -27,9 +35,11 @@ router.get('/findall', (req, res) => {
 router.post('/', function (req, res, next) {
     const phase = req.body.phase;
 
-    if (phase === "needToRegister"){
-        return res.render('index', {phase: "needToRegister",
-            details: {duplicate: false, inFormat: true, timedOut : false}});
+    if (phase === "needToRegister") {
+        return res.render('index', {
+            phase: "needToRegister",
+            details: {duplicate: false, inFormat: true, timedOut: false}
+        });
     }
 
     const cookies = new Cookies(req, res, {keys: keys})
@@ -39,13 +49,11 @@ router.post('/', function (req, res, next) {
     const email = req.body.email.toLowerCase()
 
     switch (phase) {
-        case "needToRegister":
 
         case "finishedReg1":
 
-             if (!registrationCookie) {
-                cookies.set("registrationCookie", new Date().toISOString(), {signed: true, maxAge: 1000 * 15})
-                 //todo change back to 60 seconds!
+            if (!registrationCookie) {
+                cookies.set("registrationCookie", new Date().toISOString(), {signed: true, maxAge: 1000 * 60})
             }
 
             let duplicate = false;
@@ -62,7 +70,7 @@ router.post('/', function (req, res, next) {
             if (duplicate) {
                 return res.render('index', {
                     phase: "needToRegister",
-                    details: {duplicate: true, email, firstName, lastName, timedOut : false}
+                    details: {duplicate: true, email, firstName, lastName, timedOut: false}
                 });
 
             } else {
@@ -77,8 +85,10 @@ router.post('/', function (req, res, next) {
 
         case "entered2Passwords":
             if (!registrationCookie) {
-                return res.render('index', {phase: "needToRegister",
-                    details: {email, firstName, lastName, duplicate: false, inFormat: true, timedOut : true}});
+                return res.render('index', {
+                    phase: "needToRegister",
+                    details: {email, firstName, lastName, duplicate: false, inFormat: true, timedOut: true}
+                });
             }
 
             const LENGTH = 8;
@@ -104,6 +114,31 @@ router.post('/', function (req, res, next) {
             } else if (!matching && isLongEnough) {
                 return res.render('index', {phase: "choosePassword", details: {matching: false, isLongEnough: true}});
             }
+
+        case "userLogged":
+
+            const password = req.body.loginPassword
+
+            db.User.findOne({
+                where: {
+                    email: email.toLowerCase(),
+                    password: password
+                }
+            }).then(user => {
+
+                if (user) { // exist
+                    req.session.loggedIn = true
+                    return res.render('home');
+
+                } else {
+                    return res.render('index', {phase: "login", details: {value: email, loginFailed: true}});
+                }
+
+            }).catch(() => {
+                console.log("in catch :(");
+            });
+            break; // to calm down the compiler
+
 
         default:
             return res.render('index', {phase: "default", details: {}});

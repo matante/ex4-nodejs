@@ -21,8 +21,8 @@ let ValidationModule = (() => {
 
     };
 
-    const isMatching = function (pw1, pw2){
-        if (pw1 === pw2){
+    const isMatching = function (pw1, pw2) {
+        if (pw1 === pw2) {
             document.getElementById("notMatchingPassword").classList.add("d-none"); // remove the error
             return true;
         }// else, invalid
@@ -31,9 +31,9 @@ let ValidationModule = (() => {
 
     }
 
-    const isLongEnough = function (pw1, pw2){
+    const isLongEnough = function (pw1, pw2) {
         const LENGTH = 8;
-        if (pw1.length == LENGTH && pw2.length == LENGTH){
+        if (pw1.length == LENGTH && pw2.length == LENGTH) {
             document.getElementById("shortPassword").classList.add("d-none"); // remove the error
             return true;
         }// else, invalid
@@ -47,7 +47,21 @@ let ValidationModule = (() => {
 
 
 // a function which calls the two other functions above, and returns if the data was valid
-    PublicData.validateRegistrationForm = function (form) {
+    PublicData.validateForm = function (form) {
+        const kind = form.attributes.id.value;
+        switch (kind) {
+            case "registrationForm":
+                return validateRegistrationForm(form);
+            case "choosePassword":
+                return validatePasswordForm(form);
+            case "loginForm":
+                return validateLoginForm(form);
+            default:
+                return false;
+        }
+    }
+
+    const validateRegistrationForm = function (form) {
 
         const v1 = form.checkValidity();
         const v2 = onlyChars("firstName");
@@ -58,7 +72,7 @@ let ValidationModule = (() => {
         return v1 && v2 && v3;
     };
 
-    PublicData.validatePasswordForm = function (form) {
+    const validatePasswordForm = function (form) {
 
         const v1 = form.checkValidity();
 
@@ -73,6 +87,12 @@ let ValidationModule = (() => {
         return v1 && v2 && v3;
     };
 
+    const validateLoginForm = function (form) {
+        const v1 = form.checkValidity();
+        return v1;
+    };
+
+
     return PublicData;
 })();
 
@@ -85,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             event.preventDefault(); // no annoying refresh
 
-            if (!ValidationModule.validateRegistrationForm(registrationForm)) {// validation failed
+            if (!ValidationModule.validateForm(registrationForm)) {// validation failed
                 event.stopPropagation();
             } else { // succeed
                 const email = document.getElementById("email").value.trim().toLowerCase();
@@ -111,23 +131,29 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
-    let passwordsForm = document.getElementById('choosePassword');
-    if (passwordsForm) {
-        passwordsForm.addEventListener('submit', function (event) {
+    const addFormListeners = function (form) {
+        if (form) {
 
-            event.preventDefault(); // no annoying refresh
+            form.addEventListener('submit', function (event) {
 
-            if (!ValidationModule.validatePasswordForm(passwordsForm)) {// validation failed
-                event.stopPropagation();
-            } else { // succeed
+                event.preventDefault(); // no annoying refresh
 
-                passwordsForm.submit()
+                if (!ValidationModule.validateForm(form)) {// validation failed
+                    event.stopPropagation();
+                } else { // succeed
+                    form.submit()
+                }
 
-            }
-
-            passwordsForm.classList.add('was-validated');
-        }, false);
+                form.classList.add('was-validated');
+            }, false);
+        }
     }
+
+    let passwordsForm = document.getElementById('choosePassword');
+    let loginForm = document.getElementById('loginForm');
+
+    addFormListeners(loginForm);
+    addFormListeners(passwordsForm);
 
 
 });

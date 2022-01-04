@@ -34,17 +34,26 @@
                             <h5>Please fill the details to log in</h5>
                         </div>
 
-                        <form class="needs-validation" id="loginForm" action="/home" method="post">
+                        <form class="needs-validation" id="loginForm" action="/" method="post">
                             <input type="hidden" name="phase" value="userLogged">
 
-                            <div>
-                                <input type="text" class="form-control" id="Username" aria-describedby="emailHelp"
-                                       placeholder="User Name">
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email address</label>
+                                <input type="email" class="form-control" id="email" name="email"
+                                       value="<%=details.value%>" placeholder="name@example.com" required>
                             </div>
                             <br>
-                            <div>
-                                <input type="password" class="form-control" id="password" placeholder="password">
+                            <div class="mb-3">
+                                <label for="loginPassword" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="loginPassword" name="loginPassword"
+                                       placeholder="Enter your password" required>
                             </div>
+
+                            <div class="text-danger errormessage <%= details.loginFailed ? "" : "d-none" %> "
+                                 id="argumentsInvalid">
+                                The email or the password are not matching!
+                            </div>
+
                             <br>
                             <div class="text-center">
                                 <button type="submit" class="btn btn-color bg-info w-100">Login</button>
