@@ -1,21 +1,207 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Exercise 4 - Internet Programming Course Matan Tenenboim</title>
-    <link rel='stylesheet' href='/stylesheets/style.css'/>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
-
+    <script src="javascripts/myfunctions.js"></script>
+    <title>Exercise 4 - Internet Programming Course Matan Tenenboim</title>
 </head>
 <body>
+
+
 <br>
-<div class="text-center">
-welcome home
+
+
+<div class="container">
+    <h5 class="text-center">welcome <%= firstName %> <%= lastName%>!</h5>
+    <br>
+    <div class="card bg-dark text-center ">
+        <img src="Images/background-mars.gif" class="card-img" alt="mars" height="320">
+        <div class="card-img-overlay ">
+            <div class="d-none d-sm-block"><br><br></div>
+            <div class="row">
+                <div class="col-3"></div>
+                <div class="col-6">
+                    <div class="card-body bg-white bg-opacity-75 mx-auto rounded ">
+                        <h5 class="card-title rounded"><b>Mars images browser</b></h5>
+                        <p class="card-text ">Browse NASA Mars images and save your preferred ones.</p>
+                        <button type="button" class="btn btn-primary" id="whoAmI">
+                            Who am I?
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-6">
+            <div class="card">
+                <div class="card-header bg-success bg-opacity-25">
+                    Search for images
+                </div>
+                <div class="card-body">
+
+                    <form class="row g-3 needs-validation" id="inputForm" novalidate>
+                        <div>
+                            <label for="dateValidation" class="form-label">Date (YYYY-MM-DD) or Sol</label>
+                            <input type="text" class="form-control" id="dateValidation" value="" required>
+
+                            <div class="text-danger errormessage invalid-feedback" id="emptyInput">
+                                Please insert a valid date / Sol.
+                            </div>
+                            <div class="text-danger errormessage d-none" id="invalidDateOrSol">
+                                Invalid date was inserted!
+                            </div>
+
+
+                        </div>
+
+
+                        <br>
+                        <div>
+                            <label for="ValidationRover" class="form-label">Select Rover:</label>
+                            <select class="form-select" id="ValidationRover" required>
+                                <option selected disabled value="">Choose a rover</option>
+                                <option value="1">Curiosity</option>
+                                <option value="2">Opportunity</option>
+                                <option value="3">Spirit</option>
+                            </select>
+                            <div class="text-danger errormessage invalid-feedback">
+                                Please choose a rover.
+                            </div>
+                        </div>
+
+                        <br>
+
+                        <div>
+                            <label for="ValidationCamera" class="form-label">Select Camera:</label>
+                            <select class="form-select" id="ValidationCamera" required>
+                                <option selected disabled value="">Choose a camera</option>
+                                <option value="1">FHAZ (Front Hazard Avoidance Camera)</option>
+                                <option value="2">RHAZ (Rear Hazard Avoidance Camera)</option>
+                                <option value="3">MAST (Mast Camera)</option>
+                                <option value="4">CHEMCAM (Chemistry and Camera Complex)</option>
+                                <option value="5">MAHLI (Mars Hand Lens Imager)</option>
+                                <option value="6">MARDI (Mars Descent Imager)</option>
+                                <option value="7">NAVCAM (Navigation Camera)</option>
+                                <option value="8">PANCAM (Panoramic Camera)</option>
+                                <option value="9">MINITES (Miniature Thermal Emission Spectrometer)</option>
+
+                            </select>
+                            <div class="text-danger errormessage invalid-feedback">
+                                Please choose a camera.
+                            </div>
+                            <br>
+
+
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-2">
+                                <button class="btn btn-primary" type="submit">Search</button>
+                            </div>
+
+                            <div class="d-lg-none"><br></div>
+                            <div class="col-2">
+                                <button class="btn btn-outline-primary" id="resetBtn" type="reset">Clear</button>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-center d-none" id="spinner">
+                            <div class="spinner-border" role="status">
+                                <span class="sr-only"></span>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="card ">
+                <div class="card-header bg-info bg-opacity-25">
+                    Saved Images
+                </div>
+                <div class="card-body" id="savedPhotosList">
+
+                    <button type="button" class="btn btn-primary " id="startShow">
+                        Start Slide Show
+                    </button>
+
+                    <button type="button" class="btn btn-info " id="stopShow">
+                        Stop Slide Show
+                    </button>
+
+                    <div class="overflow-auto" id="empty"><p>There are no saved pictures yet :)</p></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+
+
+    <div id="carousel" class="carousel slide d-none" data-bs-ride="carousel">
+        <div class="carousel-indicators" id="carouselIDS"></div>
+        <div class="carousel-inner" id="carouselInner"></div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+
+    <br>
+    <div class="card">
+        <div class="card-header bg-primary bg-opacity-25">
+            search results:
+        </div>
+        <div class="card-body">
+            <div class="row overflow-auto" id="searchResults">
+
+            </div>
+        </div>
+    </div>
+    <br>
+</div>
+
+
+<div class="modal fade" id="myModals" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalOuterTitle"></h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h5 id="modalInnerTitle"></h5>
+
+                <p id="modalInnerText"></p>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj"
+        crossorigin="anonymous"></script>
 </body>
 </html>
-

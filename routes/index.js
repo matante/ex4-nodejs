@@ -10,10 +10,9 @@ const {maxAge} = require("express-session/session/cookie"); //contain the User m
 /* GET home page. */
 router.get('/', function (req, res, next) {
 
-    if (req.session.loggedIn) {
+    if (req.session.email) {
         return res.render('home');
     }
-    req.session.loggedIn = false
 
     return res.render('index', {phase: 'login', details: {value: "", loginFailed: false}});
 
@@ -117,18 +116,22 @@ router.post('/', function (req, res, next) {
 
         case "userLogged":
 
-            const password = req.body.loginPassword
+            const loginPassword = req.body.loginPassword
 
             db.User.findOne({
                 where: {
                     email: email.toLowerCase(),
-                    password: password
+                    password: loginPassword
                 }
             }).then(user => {
 
                 if (user) { // exist
-                    req.session.loggedIn = true
-                    return res.render('home');
+                    req.session.email = email.toLowerCase()
+                    req.session.firstName = user.dataValues.firstName
+                    req.session.lastName = user.dataValues.lastName
+
+                    return res.redirect("/home")
+                    //return res.render('homepage', {firstName: user.dataValues.firstName, lastName: user.dataValues.lastName});
 
                 } else {
                     return res.render('index', {phase: "login", details: {value: email, loginFailed: true}});
