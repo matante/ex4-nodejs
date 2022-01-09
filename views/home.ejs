@@ -18,6 +18,7 @@
 <div class="container">
     <h5 class="text-center">welcome <%= firstName %> <%= lastName%>!</h5>
     <br>
+
     <div class="card bg-dark text-center ">
         <img src="Images/background-mars.gif" class="card-img" alt="mars" height="320">
         <div class="card-img-overlay ">
@@ -128,8 +129,18 @@
             <div class="card ">
                 <div class="card-header bg-info bg-opacity-25">
                     Saved Images
+
                 </div>
+
+
                 <div class="card-body" id="savedPhotosList">
+
+                    <div id="goToCollection" class="form-text text-center text-dark">
+                        <form action="/collection" method="get">
+                            <button type="submit" class="btn btn-color bg-info w-100">Manage your collection</button>
+                        </form>
+                    </div>
+                    <br>
 
                     <button type="button" class="btn btn-primary " id="startShow">
                         Start Slide Show

@@ -342,7 +342,24 @@ const APIKEY = "GlDtOhfxcpLXGEcCNa7VXgCchnlAJXIpFigptnse";
         const addToSavedPhotos = function (photo, id) {
             addPhotoToList(photo, id);
             addPhotoToCarousel(photo, id);
+            addPhotoToDB(photo, id);
         };
+        const addPhotoToDB = function (photo, id) {
+
+            const data = { username: 'example' };
+
+            fetch('https://example.com/profile', {
+                method: 'POST', // or 'PUT'
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                })
+        }
 
         // add a photo to the saved list
         const addPhotoToList = function (photo, id) {
@@ -357,6 +374,8 @@ const APIKEY = "GlDtOhfxcpLXGEcCNa7VXgCchnlAJXIpFigptnse";
 
             res += `</ol>`;
             savedArea.innerHTML += res;
+
+
 
         } // end of function
 

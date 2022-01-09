@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+    <script src="javascripts/myfunctions.js"></script>
+    <title>Exercise 4 - Internet Programming Course Matan Tenenboim</title>
+</head>
+<body>
+
+
+<br>
+
+
+<div class="container">
+
+    <div class="card-body" id="savedPhotosList">
+
+        <div id="goToCollection" class="form-text text-center text-dark">
+            <form action="/home" method="get">
+                <button type="submit" class="btn btn-color bg-info w-100">Back to home page</button>
+            </form>
+        </div>
+        <br>
+    </div>
+    <div class="card">
+        <div class="card-header bg-primary bg-opacity-25">
+            search results:
+        </div>
+        <div class="card-body">
+            <div class="row overflow-auto" id="searchResults">
+
+            </div>
+        </div>
+    </div>
+    <br>
+</div>
+
+
+<div class="modal fade" id="myModals" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalOuterTitle"></h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h5 id="modalInnerTitle"></h5>
+
+                <p id="modalInnerText"></p>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj"
+        crossorigin="anonymous"></script>
+</body>
+</html>
